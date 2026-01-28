@@ -1,0 +1,49 @@
+name: OpenTofu CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.tf'
+      - '**/*.yaml'
+      - '**/*.yml'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: '1.8.0'
+
+      - name: OpenTofu Format Check
+        run: tofu fmt -check -recursive
+
+      - name: OpenTofu Validate
+        run: |
+          # Find all directories with .tf files and validate each
+          DIRS=$(find . -type f -name "*.tf" -not -path "*/.terraform/*" -exec dirname {} \; | sort -u)
+          EXIT_CODE=0
+          for dir in $DIRS; do
+            echo "Validating: $dir"
+            cd "$dir"
+            tofu init -backend=false
+            tofu validate || EXIT_CODE=1
+            cd - > /dev/null
+          done
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "Validation failed"
+            exit 1
+          fi
+          echo "All modules valid"
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: YAML Lint
+        run: yamllint -d relaxed .

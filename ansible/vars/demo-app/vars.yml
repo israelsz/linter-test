@@ -1,0 +1,9 @@
+---
+# Demo Ansible Variables
+app_name: demo-app
+app_port: 8080
+
+docker_image: nginx:latest
+docker_network: demo-network
+
+environment: dev
