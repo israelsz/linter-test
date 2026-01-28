@@ -17,5 +17,5 @@ variable "environment" {
 }
 
 variable "test" {
-  default="broken"
+  default = "broken"
 }
