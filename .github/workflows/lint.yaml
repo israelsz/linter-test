@@ -22,7 +22,16 @@ jobs:
           tofu_version: '1.8.0'
 
       - name: OpenTofu Format Check
-        run: tofu fmt -check -recursive
+        run: |
+          if ! tofu fmt -check -recursive > /dev/null 2>&1; then
+            echo "Formatting issues found:"
+            echo ""
+            tofu fmt -diff -recursive
+            echo ""
+            echo "Run 'tofu fmt -recursive' locally to fix these issues."
+            exit 1
+          fi
+          echo "All files formatted correctly."
 
       - name: OpenTofu Validate
         run: |

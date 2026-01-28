@@ -10,7 +10,6 @@ Go to Settings, then Branches, then Add Rule. Set the branch name pattern to `ma
 
 - Require a pull request before merging
 - Require status checks to pass before merging (search for `Lint` and add it)
-- Require approvals (set to 1)
 - Do not allow bypassing the above settings
 
 Save the rule.
