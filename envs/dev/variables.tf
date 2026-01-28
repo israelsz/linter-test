@@ -15,3 +15,7 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "test" {
+  default="broken"
+}
